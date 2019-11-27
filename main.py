@@ -16,6 +16,10 @@ vel_x = 0
 vel_y = 0
 add_length = 0
 
+foods = [[]]
+foods[0].append(random.randrange(len(grid)))
+foods[0].append(random.randrange(len(grid)))
+
 snake_body = [[]]
 snake_body[0].append(random.randrange(len(grid)))
 snake_body[0].append(random.randrange(len(grid)))
@@ -50,8 +54,6 @@ while not done:
                 vel_x = 0
                 if vel_y < 1:
                     vel_y = 1
-            if event.key == pygame.K_SPACE:
-                add_length = 1
 
     print(vel_x, vel_y)
 
@@ -59,6 +61,13 @@ while not done:
     snake_body.append([])
     snake_body[len(snake_body) - 1].append(snake_body[len(snake_body) - 2][0] + vel_x)
     snake_body[len(snake_body) - 1].append(snake_body[len(snake_body) - 2][1] + vel_y)
+    if snake_body[len(snake_body)-1][0] == foods[len(foods)-1][0]:
+        if snake_body[len(snake_body)-1][1] == foods[len(foods)-1][1]:
+            foods.append([])
+            foods[len(foods)-1].append(random.randrange(len(grid)))
+            foods[len(foods)-1].append(random.randrange(len(grid)))
+            foods.pop(0)
+            add_length = 1
     if add_length:
         add_length = 0
         pass
@@ -80,6 +89,8 @@ while not done:
     # - Drawing the snake
     for cell in snake_body:
         pygame.draw.rect(screen, BLACK, [cell[0]*block_size, cell[1]*block_size, 10, 10], 0)
+    for food in foods:
+        pygame.draw.rect(screen, BLACK, [food[0] * block_size, food[1] * block_size, 10, 10], 0)
 
     # - Grid should always be on top of everything, so this is the last thing to be drawn
     gamefunctions.draw_grid(pygame, screen, [screen_width, screen_height], grid_size, block_size, WHITE)
