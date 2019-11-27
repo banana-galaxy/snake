@@ -13,7 +13,8 @@ done = False
 grid = gamefunctions.initiate_grid(screen_width, block_size)
 grid_size = len(grid)
 vel_x = 0
-vel_y = 0
+vel_y = 1
+direction_change = False
 add_length = 0
 
 foods = [[]]
@@ -21,8 +22,8 @@ foods[0].append(random.randrange(len(grid)))
 foods[0].append(random.randrange(len(grid)))
 
 snake_body = [[]]
-snake_body[0].append(random.randrange(len(grid)))
-snake_body[0].append(random.randrange(len(grid)))
+snake_body[0].append(int(len(grid)/2))
+snake_body[0].append(int(len(grid)/2))
 print(snake_body[0][0], snake_body[0][1])
 
 screen = pygame.display.set_mode(size)
@@ -38,22 +39,27 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
-                vel_y = 0
-                if vel_x < 1:
-                    vel_x = 1
-            if event.key == pygame.K_LEFT:
-                vel_y = 0
-                if vel_x > -1:
-                    vel_x = -1
-            if event.key == pygame.K_UP:
-                vel_x = 0
-                if vel_y > -1:
-                    vel_y = -1
-            if event.key == pygame.K_DOWN:
-                vel_x = 0
-                if vel_y < 1:
-                    vel_y = 1
+            if not direction_change:
+                if event.key == pygame.K_RIGHT:
+                    if vel_y != 0:
+                        vel_y = 0
+                        vel_x = 1
+                        direction_change = True
+                if event.key == pygame.K_LEFT:
+                    if vel_y != 0:
+                        vel_y = 0
+                        vel_x = -1
+                        direction_change = True
+                if event.key == pygame.K_UP:
+                    if vel_x != 0:
+                        vel_x = 0
+                        vel_y = -1
+                        direction_change = True
+                if event.key == pygame.K_DOWN:
+                    if vel_x != 0:
+                        vel_x = 0
+                        vel_y = 1
+                        direction_change = True
 
     print(vel_x, vel_y)
 
@@ -95,6 +101,7 @@ while not done:
     for food in foods:
         pygame.draw.rect(screen, RED, [food[0] * block_size, food[1] * block_size, 10, 10], 0)
 
+    direction_change = False
     # --- Update the screen
     pygame.display.flip()
 
