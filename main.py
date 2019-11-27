@@ -84,15 +84,14 @@ while not done:
 
     # --- Drawing code
 
-    # - Drawing the food
-
     # - Drawing the snake
     for cell in snake_body:
         pygame.draw.rect(screen, BLACK, [cell[0]*block_size, cell[1]*block_size, 10, 10], 0)
 
-    # - Grid should always be on top of everything, so this is the last thing to be drawn
+    # - Drawing the grid
     gamefunctions.draw_grid(pygame, screen, [screen_width, screen_height], grid_size, block_size, WHITE)
 
+    # - Drawing the food
     for food in foods:
         pygame.draw.rect(screen, RED, [food[0] * block_size, food[1] * block_size, 10, 10], 0)
 
