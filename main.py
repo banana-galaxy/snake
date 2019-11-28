@@ -16,6 +16,7 @@ vel_x = 0
 vel_y = 1
 direction_change = False
 add_length = 0
+add_count = 0
 gameover_pic = pygame.image.load("g_o_t.png")
 gameover = False
 restart = False
@@ -42,7 +43,8 @@ while not done:
             done = True
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                restart = True
+                if gameover:
+                    restart = True
             if not direction_change and not gameover:
                 if event.key == pygame.K_RIGHT:
                     if vel_y != 0:
@@ -65,7 +67,7 @@ while not done:
                         vel_y = 1
                         direction_change = True
 
-    if restart:
+    if restart and gameover:
         restart = False
         gameover = False
         snake_body = [[]]
@@ -78,6 +80,8 @@ while not done:
     gameover = gamefunctions.collide(grid_size, snake_body, (vel_x, vel_y))
     if not gameover:
         # --- Game logic
+
+        #
         snake_body.append([])
         snake_body[len(snake_body) - 1].append(snake_body[len(snake_body) - 2][0] + vel_x)
         snake_body[len(snake_body) - 1].append(snake_body[len(snake_body) - 2][1] + vel_y)
@@ -88,10 +92,17 @@ while not done:
                 foods[len(foods)-1].append(random.randrange(len(grid)))
                 foods.pop(0)
                 add_length = 1
+                add_count = 2
+
+        # managing snake growth/shrinking
         if add_length:
-            add_length = 0
+            if add_count > 0:
+                add_count -= 1
+            else:
+                add_length = 0
             pass
         else:
+            # just move the snake if it doesn't need growth or shrinking
             snake_body.pop(0)
 
         # --- Screen-clearing code
@@ -109,7 +120,7 @@ while not done:
 
         # - Drawing the food
         for food in foods:
-            pygame.draw.rect(screen, RED, [food[0] * block_size, food[1] * block_size, 10, 10], 0)
+            pygame.draw.rect(screen, GREEN, [food[0] * block_size, food[1] * block_size, 10, 10], 0)
 
         direction_change = False
         # --- Update the screen
