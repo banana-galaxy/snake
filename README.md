@@ -11,3 +11,4 @@ note you will need pygame to run the game. You can install pygame with
 ### controls
 Arrow buttons to control snake direction.
 <br>Space to restart the game.
+<br>P button to pause/resume the game.
