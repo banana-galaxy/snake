@@ -18,12 +18,13 @@ direction_change = False
 add_length = 0
 add_count = 0
 gameover_pic = pygame.image.load("g_o_t.png")
+icon = pygame.image.load("icon_snake.png")
+pause_pic = pygame.image.load("pause.png")
 gameover = False
 restart = False
+pause = False
 
-foods = [[]]
-foods[0].append(random.randrange(len(grid)))
-foods[0].append(random.randrange(len(grid)))
+
 
 snake_body = [[]]
 snake_body[0].append(int(len(grid)/2))
@@ -31,7 +32,12 @@ snake_body[0].append(int(len(grid)/2))
 
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Snake")
+pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
+
+foods = []
+x, y = random.randrange(len(grid)), random.randrange(len(grid))
+foods.append(gamefunctions.Food(pygame, screen, block_size, GREEN, x, y))
 
 
 # -------- Main Program Loop -----------
@@ -42,10 +48,15 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_p:
+                if pause:
+                    pause = False
+                else:
+                    pause = True
             if event.key == pygame.K_SPACE:
                 if gameover:
                     restart = True
-            if not direction_change and not gameover:
+            if not direction_change and not gameover and not pause:
                 if event.key == pygame.K_RIGHT:
                     if vel_y != 0:
                         vel_y = 0
@@ -78,21 +89,21 @@ while not done:
 
 
     gameover = gamefunctions.collide(grid_size, snake_body, (vel_x, vel_y))
-    if not gameover:
+    if not gameover and not pause:
         # --- Game logic
 
         #
         snake_body.append([])
         snake_body[len(snake_body) - 1].append(snake_body[len(snake_body) - 2][0] + vel_x)
         snake_body[len(snake_body) - 1].append(snake_body[len(snake_body) - 2][1] + vel_y)
-        if snake_body[len(snake_body)-1][0] == foods[len(foods)-1][0]:
-            if snake_body[len(snake_body)-1][1] == foods[len(foods)-1][1]:
-                foods.append([])
-                foods[len(foods)-1].append(random.randrange(len(grid)))
-                foods[len(foods)-1].append(random.randrange(len(grid)))
-                foods.pop(0)
-                add_length = 1
-                add_count = 2
+        for food in foods:
+            if snake_body[len(snake_body)-1][0] == food.pos()[0]:
+                if snake_body[len(snake_body)-1][1] == food.pos()[1]:
+                    x, y = random.randrange(len(grid)), random.randrange(len(grid))
+                    foods.append(gamefunctions.Food(pygame, screen, block_size, GREEN, x, y))
+                    add_count = food.eat()
+                    foods.remove(food)
+                    add_length = 1
 
         # managing snake growth/shrinking
         if add_length:
@@ -120,10 +131,16 @@ while not done:
 
         # - Drawing the food
         for food in foods:
-            pygame.draw.rect(screen, GREEN, [food[0] * block_size, food[1] * block_size, 10, 10], 0)
+            food.draw()
 
         direction_change = False
         # --- Update the screen
+        pygame.display.flip()
+    elif pause and not gameover:
+        try:
+            screen.blit(pause_pic, (0, 0))
+        except:
+            pass
         pygame.display.flip()
     else:
         screen.blit(gameover_pic, (0, 0))

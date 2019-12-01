@@ -1,3 +1,5 @@
+import random
+
 def initiate_grid(window_size, block_size):
     grid = []
     size = window_size
@@ -33,3 +35,38 @@ def collide(grid_size, snake, velocities):
         return True
     if next_head_y >= grid_size or next_head_y < 0:
         return True
+
+
+class Food:
+
+    def __init__(self, pygame, screen, block_size, color, x, y):
+        self.pygame = pygame
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.color = color
+        self.block_size = block_size
+
+    def pos(self):
+        return self.x, self.y
+
+    def eat(self):
+        return 2
+
+    def draw(self):
+        self.pygame.draw.rect(self.screen, self.color, [self.x * self.block_size, self.y * self.block_size, self.block_size, self.block_size], 0)
+
+
+
+'''collides = False
+        for i in range(amount):
+            while True:
+                self.x = random.randrange(self.grid_size)
+                self.y = random.randrange(self.grid_size)
+                for cell in snake:
+                    if cell == [self.x, self.y]:
+                        collides = True
+                if collides:
+                    continue
+                else:
+                    break'''
