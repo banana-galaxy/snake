@@ -18,8 +18,8 @@ direction_change = False
 add_length = 0
 add_count = 0
 gameover_pic = pygame.image.load("g_o_t.png")
-icon = pygame.image.load("icon_snake.png")
-pause_pic = pygame.image.load("pause.png")
+#icon = pygame.image.load("icon_snake.png")
+#pause_pic = pygame.image.load("pause.png")
 gameover = False
 restart = False
 pause = False
@@ -32,7 +32,7 @@ snake_body[0].append(int(len(grid)/2))
 
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Snake")
-pygame.display.set_icon(icon)
+#pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
 
 foods = []
